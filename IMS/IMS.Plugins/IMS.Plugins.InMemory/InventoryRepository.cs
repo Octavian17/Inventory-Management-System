@@ -1,5 +1,6 @@
 ﻿using IMS.CoreBusiness;
 using IMS.UseCases.PluginInterfaces;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IMS.Plugins.InMemory
 {
@@ -38,6 +39,28 @@ namespace IMS.Plugins.InMemory
             if (string.IsNullOrWhiteSpace(name)) return await Task.FromResult(_inventories);
 
             return _inventories.Where(x => x.InventoryName.Contains(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public async Task<Inventory> GetInventoryByIdAsync(int inventoryId)
+        {
+           return await Task.FromResult(_inventories.First(x => x.InventoryId == inventoryId));
+        }
+
+        public Task UpdateInventoryAsync(Inventory inventory)
+        {
+            if(_inventories.Any(x => x.InventoryId != inventory.InventoryId && x.InventoryName.Equals(inventory.InventoryName, StringComparison.OrdinalIgnoreCase)))
+                return Task.CompletedTask; 
+
+            var invToUpdate = _inventories.FirstOrDefault(x => x.InventoryId == inventory.InventoryId);
+
+            if(invToUpdate is not null)
+            {
+                invToUpdate.InventoryName = inventory.InventoryName;
+                invToUpdate.Quantity = inventory.Quantity;
+                invToUpdate.Price = inventory.Price;
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

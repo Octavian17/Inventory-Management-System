@@ -2,6 +2,7 @@
 
 
 @inject IViewInventoriesByNameUseCase ViewInventoriesByNameUseCase
+@inject IEditInventoryUseCase EditInventoryUseCase
 
 <PageTitle>Test Page</PageTitle>
 
@@ -25,6 +26,9 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("whe")).ToList();
+		var inventory = new Inventory { InventoryId = 1, InventoryName = "Bike Body", Quantity = 50, Price = 3 };
+		await EditInventoryUseCase.ExecuteAsync(inventory);
+
+		inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("")).ToList();
 	}
 }
