@@ -15,5 +15,28 @@ namespace IMS.CoreBusiness
 
         [Range(0, int.MaxValue, ErrorMessage = "Price must be a non-negative number.")]
         public double Price { get; set; }
+
+        public List<ProductInventory> ProductInventory { get; set; } = new List<ProductInventory>();
+
+        public void AddInventory(Inventory inventory)
+        {
+            if (!this.ProductInventory.Any(x => x.Inventory is not null &&  x.Inventory.InventoryName.Equals(inventory.InventoryName)))
+            {
+
+                this.ProductInventory.Add(new ProductInventory
+                {
+                    InventoryId = inventory.InventoryId,
+                    Inventory = inventory,
+                    InventoryQuantity = 1,
+                    ProductId = this.ProductId,
+                    Product = this
+                });
+            }
+        }
+
+        public void RemoveInventory(ProductInventory productInventory)
+        {
+            this.ProductInventory.Remove(productInventory);
+        }
     }
 }
