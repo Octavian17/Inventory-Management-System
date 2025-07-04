@@ -1,4 +1,10 @@
-﻿<SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
+﻿<div class="card">
+	<div class="card-body">
+
+<SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
+
+	</div>
+</div>
 
 @if(this.Product is not null &&
 	this.Product.ProductInventory is not null &&
@@ -29,6 +35,7 @@
 		</tbody>
 	</table>
 }
+
 
 @code {
 	[Parameter]

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using IMS.CoreBusiness.Validations;
+using System.ComponentModel.DataAnnotations;
 
 namespace IMS.CoreBusiness
 {
@@ -16,6 +17,7 @@ namespace IMS.CoreBusiness
         [Range(0, int.MaxValue, ErrorMessage = "Price must be a non-negative number.")]
         public double Price { get; set; }
 
+        [Product_EnsurePriceIsGreaterThanInventoriesCost]
         public List<ProductInventory> ProductInventory { get; set; } = new List<ProductInventory>();
 
         public void AddInventory(Inventory inventory)
