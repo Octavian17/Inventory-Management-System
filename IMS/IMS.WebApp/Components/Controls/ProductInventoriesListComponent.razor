@@ -1,12 +1,4 @@
-﻿<div class="card">
-	<div class="card-body">
-
-<SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
-
-	</div>
-</div>
-
-@if (this.Product is not null &&
+﻿@if (this.Product is not null &&
 	this.Product.ProductInventory is not null &&
 	this.Product.ProductInventory.Count > 0)
 {
@@ -36,15 +28,10 @@
 	</table>
 }
 
-
 @code {
 	[Parameter]
 	public Product? Product { get; set; }
 
-	private void HandleInventorySelected(Inventory inventory)
-	{
-		this.Product?.AddInventory(inventory);
-	}
 
 	private void RemoveInventory(ProductInventory productInventory)
 	{
