@@ -30,6 +30,13 @@
 			<label for="price">Product Price</label>
 			<InputNumber id="price" class="form-control" @bind-Value="product.Price" />
 		</div>
+		<div class="card">
+			<div class="card-body">
+
+				<SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
+
+			</div>
+		</div>
 
 		<div class="form-group">
 			<label for="inventories">Inventories</label>
@@ -83,6 +90,11 @@
 	protected override async Task OnParametersSetAsync()
 	{
 		this.product ??= await ViewProductByIdUseCase.ExecuteAsync(this.ProdId);
+	}
+
+	private void HandleInventorySelected(Inventory inventory)
+	{
+		this.product?.AddInventory(inventory);
 	}
 
 	private void RemoveInventory(ProductInventory productInventory)
