@@ -6,10 +6,12 @@
 
 @rendermode InteractiveServer
 
+@inject IJSRuntime JSRuntime
+
 <h3>Produce Product</h3>
 <br />
 
-<EditForm Model="produceViewModel" OnValidSubmit="Produce">
+<EditForm id= "produce-form" Model="produceViewModel" OnValidSubmit="Produce">
 
 	<DataAnnotationsValidator></DataAnnotationsValidator>
 	<ValidationSummary></ValidationSummary>
@@ -53,11 +55,22 @@
 		return list.Select(x => new ItemViewModel { Id = x.ProductId, Name = x.ProductName })?.ToList();
 	}
 
+	protected override void OnAfterRender(bool firstRender)
+	{
+		base.OnAfterRender(firstRender);
+
+		if (firstRender)
+		{
+			JSRuntime.InvokeVoidAsync("proventFormSubmission", "produce-form");
+		}
+	}
+
 	private async Task HandleItemSelected(ItemViewModel item)
 	{
 		selectedProduct = (await ViewProductsByIdUseCase.ExecuteAsync(item.Id));
 
 		this.produceViewModel.ProductId = item.Id;
+		this.produceViewModel.Product = selectedProduct;
 	}
 
 	private async Task Produce()
