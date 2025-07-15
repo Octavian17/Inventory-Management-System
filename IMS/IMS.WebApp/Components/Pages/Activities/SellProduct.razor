@@ -1,0 +1,96 @@
+﻿@page "/sell"
+
+@inject IViewProductByIdUseCase ViewProductsByIdUseCase
+@inject IViewProductsByNameUseCase ViewProductsByNameUseCase
+@inject ISellProductUseCase SellProductUseCase
+
+@inject IJSRuntime JSRuntime
+
+@rendermode InteractiveServer
+
+
+<h3>Sell Product</h3>
+<br />
+
+<EditForm id="sell-form" Model="sellViewModel" OnValidSubmit="Sell">
+
+	<DataAnnotationsValidator></DataAnnotationsValidator>
+	<ValidationSummary></ValidationSummary>
+
+	<div class="form-group">
+		<label for="po">Sales Order #</label>
+		<InputText id="po" @bind-Value="sellViewModel.SalesOrderNumber" class="form-control"></InputText>
+	</div>
+
+	<br />
+	<div class="card">
+		<div class="card-body">
+			<div class="form-group">
+				<AutoCompleteComponent Label="Product to Sell" SearchFunction="SearchProduct" OnItemSelected="HandleItemSelected"></AutoCompleteComponent>
+			</div>
+		</div>
+	</div>
+
+	<br />
+
+	<div class="form-group">
+		<label for="qty">Sell Quantity</label>
+		<InputNumber id="qty" @bind-Value="sellViewModel.QuantityToSell" class="form-control"></InputNumber>
+	</div>
+
+	<div class="form-group">
+		<label for="price">Unit Price</label>
+		<InputNumber id="price" @bind-Value="sellViewModel.UnitPrice" class="form-control"></InputNumber>
+	</div>
+	<br />
+
+	<button type="submit" class="btn btn-primary">Sell</button>
+
+</EditForm>
+
+@code {
+	private SellViewModel sellViewModel = new SellViewModel();
+	private Product? selectedProduct = null;
+
+	private List<ItemViewModel>? SearchProduct(string name)
+	{
+		var list = ViewProductsByNameUseCase.ExecuteAsync(name).GetAwaiter().GetResult();
+
+		if (list is null) return null;
+
+		return list.Select(x => new ItemViewModel { Id = x.ProductId, Name = x.ProductName })?.ToList();
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		base.OnAfterRender(firstRender);
+
+		if (firstRender)
+		{
+			JSRuntime.InvokeVoidAsync("proventFormSubmission", "sell-form");
+		}
+	}
+
+	private async Task HandleItemSelected(ItemViewModel item)
+	{
+		selectedProduct = (await ViewProductsByIdUseCase.ExecuteAsync(item.Id));
+
+		this.sellViewModel.ProductId = item.Id;
+		this.sellViewModel.Product = selectedProduct;
+		this.sellViewModel.UnitPrice = selectedProduct.Price;
+	}
+
+	private async Task Sell()
+	{
+		await this.SellProductUseCase.ExecuteAsync(
+			this.sellViewModel.SalesOrderNumber,
+			this.selectedProduct,
+			this.sellViewModel.QuantityToSell,
+			this.sellViewModel.UnitPrice,
+			"Octavian");
+		;
+
+		this.sellViewModel = new SellViewModel();
+		this.selectedProduct = null;
+	}
+}
