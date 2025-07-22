@@ -44,6 +44,7 @@
 				<th>Activity</th>
 				<th>Quantity Before</th>
 				<th>Quantity After</th>
+				<th>Unit Price</th>
 				<th>PO#</th>
 				<th>Production #</th>
 			</tr>
@@ -66,6 +67,7 @@
 					</td>
 					<td>@transaction.QuantityBefore</td>
 					<td>@transaction.QuantityAfter</td>
+                    <td>@transaction.UnitPrice.ToString("c")</td>
 					<td>@transaction.PONumber</td>
 					<td>@transaction.ProductionNumber</td>
 				</tr>
@@ -79,7 +81,7 @@
 	private string invName;
 	private DateTime? dateFrom;
 	private DateTime? dateTo;
-	private int? activityTypeId;
+	private int activityTypeId;
 	private IEnumerable<InventoryTransaction>? inventoryTransactions;
 
 	private async Task SearchInventories()
