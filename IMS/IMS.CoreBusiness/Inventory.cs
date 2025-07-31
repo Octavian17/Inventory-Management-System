@@ -15,5 +15,7 @@ namespace IMS.CoreBusiness
 
         [Range(0, int.MaxValue, ErrorMessage = "Price must be a non-negative number.")]
         public double Price { get; set; }
-    }
+
+		public List<ProductInventory> ProductInventory { get; set; } = new List<ProductInventory>();
+	}
 }
