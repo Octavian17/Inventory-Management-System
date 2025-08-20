@@ -48,32 +48,14 @@
 
 	protected override async Task OnParametersSetAsync()
 	{
-		if(this.inventory is null)
-		{
-			var inv = await ViewInventoryByIdUseCase.ExecuteAsync(InvId);
-			inventory = new InventoryViewModel
-			{
-				InventoryId = inv.InventoryId,
-				InventoryName = inv.InventoryName,
-				Quantity = inv.Quantity,
-				Price = inv.Price
-            };
-			
-		}
+		this.inventory ??= await ViewInventoryByIdUseCase.ExecuteAsync(this.InvId);
 	}
 
 	private async Task Update()
 	{
 		if(inventory is not null)
 		{
-			var inv = new Inventory
-			{
-				InventoryId = inventory.InventoryId,
-				InventoryName = inventory.InventoryName,
-				Quantity = inventory.Quantity,
-				Price = inventory.Price
-            };
-			await EditInventoryUseCase.ExecuteAsync(inv);
+			await EditInventoryUseCase.ExecuteAsync(inventory);
 			NavigationManager.NavigateTo("/inventories");
 		}
 	}
